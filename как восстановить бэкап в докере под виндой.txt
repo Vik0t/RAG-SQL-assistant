@@ -1,0 +1,5 @@
+docker run -d --name pg-restore -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=postgres -v "АБСОЛЮТНЫЙ ПУТЬ\task_db_dump.sql:/task_db_dump.sql:ro" -p 5434:5432 postgres:15
+ 
+docker exec -i pg-restore psql -U postgres -d postgres -c "CREATE DATABASE task_db ENCODING 'UTF8' LOCALE_PROVIDER icu ICU_LOCALE 'ru-RU' TEMPLATE template0;"
+
+docker exec -i pg-restore psql -U postgres -d task_db -f /task_db_dump.sql
