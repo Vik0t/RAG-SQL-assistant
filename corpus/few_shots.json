@@ -1,0 +1,42 @@
+[
+  {
+    "question": "Все задачи моей компании за сентябрь 2025",
+    "sql": "SELECT * FROM tasks WHERE company_id = {{company_id}} AND created_at >= '2025-09-01' AND created_at < '2025-10-01' LIMIT 200"
+  },
+  {
+    "question": "Все сотрудники моего подразделения",
+    "sql": "SELECT u.* FROM users u JOIN departments d ON u.department_id = d.id WHERE u.company_id = {{company_id}} AND u.department_id = {{department_id}} LIMIT 200"
+  },
+  {
+    "question": "Все задачи моих непосредственных подчиненных",
+    "sql": "SELECT t.* FROM tasks t JOIN users u ON t.assigned_user_id = u.id WHERE u.company_id = {{company_id}} AND u.manager_id = {{user_id}} LIMIT 200"
+  },
+  {
+    "question": "Все однофамильцы в моей компании",
+    "sql": "SELECT last_name, COUNT(*) AS cnt FROM users WHERE company_id = {{company_id}} GROUP BY last_name HAVING COUNT(*) > 1 ORDER BY cnt DESC LIMIT 200"
+  },
+  {
+    "question": "Задачи с высоким приоритетом, назначенные на мое подразделение",
+    "sql": "SELECT t.* FROM tasks t WHERE t.company_id = {{company_id}} AND t.assigned_department_id = {{department_id}} AND t.priority IN ('high','urgent') LIMIT 200"
+  },
+  {
+    "question": "Все мои завершенные задачи за последний квартал",
+    "sql": "WITH bounds AS (SELECT date_trunc('quarter', now()) - interval '3 months' AS start_q, date_trunc('quarter', now()) AS end_q) SELECT t.* FROM tasks t, bounds b WHERE t.company_id = {{company_id}} AND t.assigned_user_id = {{user_id}} AND t.status IN ('done','completed') AND t.completed_date >= b.start_q AND t.completed_date < b.end_q LIMIT 200"
+  },
+  {
+    "question": "Сотрудники во всех компаниях с активной задачей",
+    "sql": "SELECT DISTINCT u.* FROM users u JOIN tasks t ON t.assigned_user_id = u.id WHERE t.status IN ('new','in_progress') LIMIT 200"
+  },
+  {
+    "question": "Мои задачи, которые меняли статус более 5 раз",
+    "sql": "SELECT t.* FROM tasks t JOIN task_history h ON h.task_id = t.id WHERE t.assigned_user_id = {{user_id}} GROUP BY t.id HAVING COUNT(*) FILTER (WHERE h.field = 'status') > 5 LIMIT 200"
+  },
+  {
+    "question": "Все руководители подразделений в моей компании",
+    "sql": "SELECT u.* FROM users u JOIN departments d ON d.head_user_id = u.id WHERE u.company_id = {{company_id}} LIMIT 200"
+  },
+  {
+    "question": "Все задачи, связанные хотя бы с одной моей задачей",
+    "sql": "SELECT DISTINCT t2.* FROM tasks t1 JOIN task_dependencies dep ON dep.task_id = t1.id JOIN tasks t2 ON t2.id = dep.depends_on_task_id WHERE t1.assigned_user_id = {{user_id}} AND t1.company_id = {{company_id}} LIMIT 200"
+  }
+]
