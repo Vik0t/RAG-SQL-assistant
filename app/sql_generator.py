@@ -2,6 +2,8 @@ from typing import Optional, Tuple, List, Dict
 import os
 import re
 import json
+from groq import Groq
+
 
 from .models import GeneratedSQL, Identity
 from .retriever import retrieve_snippets
@@ -123,9 +125,8 @@ def generate_sql(question: str, identity: Identity, limit: int = 200) -> Generat
   
     try:
         from openai import OpenAI
-        client = OpenAI(
-            base_url="https://openrouter.ai/api/v1",
-            api_key="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",
+        client = Groq(
+            api_key="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",
             )
 
         system_prompt = (
@@ -143,7 +144,7 @@ def generate_sql(question: str, identity: Identity, limit: int = 200) -> Generat
         )
 
         resp = client.chat.completions.create(
-            model="x-ai/grok-4-fast:free",
+            model="openai/gpt-oss-120b",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt},

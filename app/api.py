@@ -1,4 +1,4 @@
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, render_template
 import json
 from datetime import datetime, date
 from decimal import Decimal
@@ -8,7 +8,6 @@ from .db import fetch_one, fetch_all
 from .schema_cache import schema_cache
 from .safety import is_safe_select
 from .sql_generator import generate_sql
-
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
@@ -20,7 +19,6 @@ except Exception:
 # Force JSON responses to declare UTF-8
 app.config["JSONIFY_MIMETYPE"] = "application/json; charset=utf-8"
 
-
 def _json_default(obj):
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
@@ -28,18 +26,15 @@ def _json_default(obj):
         return float(obj)
     return str(obj)
 
-
 def json_utf8(data, status: int = 200):
     body = json.dumps(data, ensure_ascii=False, default=_json_default)
     resp = make_response(body, status)
     resp.headers["Content-Type"] = "application/json; charset=utf-8"
     return resp
 
-
 @app.route("/health", methods=["GET"])
 def health():
     return json_utf8({"status": "ok"})
-
 
 @app.route("/debug/schema", methods=["GET"])
 def debug_schema():
@@ -55,36 +50,9 @@ def debug_schema():
         "fks_count": len(schema_cache.foreign_keys),
     })
 
-
 @app.route("/", methods=["GET"])
 def index():
-    return (
-        """
-        <html>
-          <head>
-          <meta charset="UTF-8">
-          <title>RAG-SQL Assistant</title></head>
-          <body>
-            <h2>RAG-SQL Assistant (Flask)</h2>
-            <p>Service is running. Use <code>POST /ask</code> with JSON.</p>
-            <pre>
-curl -X POST http://localhost:8000/ask \
-  -H 'Content-Type: application/json' \
-  -d '{"question":"Все задачи моей компании за сентябрь 2025","identity":{"user_id":1}}'
-            </pre>
-            <p>Diagnostics: <a href="/debug/schema">/debug/schema</a>, <a href="/health">/health</a></p>
-            <h3>Quick test form</h3>
-            <form method="post" action="/ask">
-              <label>Question: <input name="question" style="width: 400px" value="Все задачи моей компании за сентябрь 2025"/></label><br/>
-              <label>User ID: <input name="user_id" value="1"/></label><br/>
-              <button type="submit">Send</button>
-            </form>
-          </body>
-        </html>
-        """,
-        200,
-        {"Content-Type": "text/html; charset=utf-8"},
-    )
+    return render_template('index.html')
 
 
 @app.route("/ask", methods=["POST"])

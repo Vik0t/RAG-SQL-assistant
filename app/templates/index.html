@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}RAG-SQL Assistant - Главная{% endblock %}
+
+{% block content %}
+    <header>
+        <h1>RAG-SQL Assistant (Flask)</h1>
+        <p>Service is running. Use <code>POST /ask</code> with JSON.</p>
+    </header>
+
+    <section class="example">
+        <h3>cURL Example</h3>
+        <pre><code>curl -X POST http://localhost:8000/ask \
+  -H 'Content-Type: application/json' \
+  -d '{"question":"Все задачи моей компании за сентябрь 2025","identity":{"user_id":1}}'</code></pre>
+    </section>
+
+    <section class="diagnostics">
+        <h3>Diagnostics</h3>
+        <ul>
+            <li><a href="/debug/schema">/debug/schema</a></li>
+            <li><a href="/health">/health</a></li>
+        </ul>
+    </section>
+
+    <section class="test-form">
+        <h3>Quick test form</h3>
+        <form method="post" action="/ask">
+            <div class="form-group">
+                <label for="question">Question:</label>
+                <input type="text" id="question" name="question" 
+                       value="Все задачи моей компании за сентябрь 2025" class="form-input">
+            </div>
+            <div class="form-group">
+                <label for="user_id">User ID:</label>
+                <input type="number" id="user_id" name="user_id" value="1" class="form-input">
+            </div>
+            <button type="submit" class="btn">Send</button>
+        </form>
+    </section>
+{% endblock %}
