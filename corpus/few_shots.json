@@ -1,7 +1,7 @@
 [
   {
-    "question": "Все задачи моей компании за сентябрь 2025",
-    "sql": "SELECT * FROM tasks WHERE company_id = {{company_id}} AND created_at >= '2025-09-01' AND created_at < '2025-10-01' LIMIT 200"
+    "question": "Все задачи моей компании на сентябрь 2025",
+    "sql": "SELECT t.* FROM tasks t JOIN departments d WHERE d.company_id = ( SELECT d2.company_id FROM users u JOIN departments d2 ON u.department_id = d2.id WHERE u.id = 2 ) AND t.due_date >= DATE '2025-09-01' AND t.due_date < DATE '2025-10-01' LIMIT 200"
   },
   {
     "question": "Все сотрудники моего подразделения",
@@ -37,6 +37,6 @@
   },
   {
     "question": "Все задачи, связанные хотя бы с одной моей задачей",
-    "sql": "SELECT DISTINCT t2.* FROM tasks t1 JOIN task_dependencies dep ON dep.task_id = t1.id JOIN tasks t2 ON t2.id = dep.depends_on_task_id WHERE t1.assigned_user_id = {{user_id}} AND t1.company_id = {{company_id}} LIMIT 200"
+    "sql": "SELECT DISTINCT t2.* FROM tasks t1 JOIN task_dependencies dep ON dep.task_id = t1.id JOIN tasks t2 ON t2.id = dep.depends_on_task_id WHERE t1.assigned_user_id = {{user_id}} LIMIT 200"
   }
 ]

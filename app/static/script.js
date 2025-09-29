@@ -51,10 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Пожалуйста, введите User ID');
             return;
         }
-        if (parseInt(userId) <= 0 || parseInt(userId) > 5) {
-            alert('User ID должен быть числом от 1 до 5');
-            return;
-        }
         
         setSavedUserId(userId);
         updateUI();
