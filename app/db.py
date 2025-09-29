@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    postgres_dsn: str = "postgresql://postgres:postgres@localhost:5432/tasks"
+    postgres_dsn: str = "postgresql://postgres:postgres@localhost:5432/task_db"
     readonly_role: Optional[str] = None
 
 
