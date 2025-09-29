@@ -24,7 +24,7 @@
             <span>Текущий User ID: <strong id="currentUserId">не установлен</strong></span>
             <button id="changeUserId" class="btn btn-secondary">Сменить пользователя</button>
         </div>
-        <p>Service is running. Use the form below to make requests.</p>
+        <p>Сервис запущен. Для отправки запросов используйте форму ниже.</p>
     </header>
 
     <section class="example">
@@ -37,34 +37,34 @@
             <button class="query-example" data-query="Задачи в процессе выполнения">В процессе</button>
         </div>
         
-        <h3>cURL Example</h3>
+        <h3>Пример cURL</h3>
         <pre><code>curl -X POST http://localhost:8000/ask \
   -H 'Content-Type: application/json' \
   -d '{"question":"Все мои задачи","identity":{"user_id":1}}'</code></pre>
     </section>
 
     <section class="diagnostics">
-        <h3>Diagnostics</h3>
+        <h3>Диагностика</h3>
         <ul>
             <li><a href="/health">/health</a></li>
         </ul>
     </section>
 
     <section class="test-form">
-        <h3>Make a Request</h3>
+        <h3>Сделать запрос</h3>
         <form id="askForm" method="post" action="/ask">
             <div class="form-group">
-                <label for="question">Question:</label>
+                <label for="question">Вопрос:</label>
                 <input type="text" id="question" name="question" 
                        value="Все мои задачи" class="form-input" required>
             </div>
             <input type="hidden" id="user_id" name="user_id" value="">
-            <button type="submit" class="btn" id="submitButton" disabled>Send Request (требуется User ID)</button>
+            <button type="submit" class="btn" id="submitButton" disabled>Отправить запрос (требуется User ID)</button>
         </form>
     </section>
 
     <section id="responseSection" class="response-section" style="display: none;">
-        <h3>Response</h3>
+        <h3>Ответ</h3>
         <div id="responseContent"></div>
     </section>
 {% endblock %}

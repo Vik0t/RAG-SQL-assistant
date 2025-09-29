@@ -4,6 +4,10 @@
     "sql": "SELECT t.* FROM tasks t JOIN departments d WHERE d.company_id = ( SELECT d2.company_id FROM users u JOIN departments d2 ON u.department_id = d2.id WHERE u.id = 2 ) AND t.due_date >= DATE '2025-09-01' AND t.due_date < DATE '2025-10-01' LIMIT 200"
   },
   {
+    "question": "Все мои подчиненные",
+    "sql": "SELECT u.* FROM users u JOIN users m ON m.id = 1 WHERE u.department_id = m.department_id AND u.id <> m.id ORDER BY u.last_name, u.first_name LIMIT 200;"
+  },
+  {
     "question": "Все сотрудники моего подразделения",
     "sql": "SELECT u.* FROM users u JOIN departments d ON u.department_id = d.id WHERE u.company_id = {{company_id}} AND u.department_id = {{department_id}} LIMIT 200"
   },

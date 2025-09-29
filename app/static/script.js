@@ -26,13 +26,13 @@ document.addEventListener('DOMContentLoaded', function() {
             currentUserIdSpan.textContent = savedUserId;
             hiddenUserId.value = savedUserId;
             submitButton.disabled = false;
-            submitButton.textContent = 'Send Request';
+            submitButton.textContent = 'Отправить запрос';
             modal.style.display = 'none';
         } else {
             currentUserIdSpan.textContent = 'не установлен';
             hiddenUserId.value = '';
             submitButton.disabled = true;
-            submitButton.textContent = 'Send Request (требуется User ID)';
+            submitButton.textContent = 'Отправить запрос (требуется User ID)';
             modal.style.display = 'block';
         }
     }
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show loading state
         submitButton.disabled = true;
-        submitButton.textContent = 'Sending...';
+        submitButton.textContent = 'Отправка...';
         responseSection.style.display = 'none';
         responseContent.innerHTML = '<div class="loading">Loading...</div>';
 
@@ -140,6 +140,8 @@ document.addEventListener('DOMContentLoaded', function() {
             submitButton.textContent = originalText;
         }
     });
+    
+    
 
     function displayResponse(data) {
         let html = '';
@@ -297,7 +299,71 @@ document.addEventListener('DOMContentLoaded', function() {
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     }
+    
+    // Обработчик для ссылки Health Check
+    const healthLink = document.querySelector('a[href="/health"]');
+    
+    if (healthLink) {
+        healthLink.addEventListener('click', async function(e) {
+            e.preventDefault(); // Предотвращаем переход по ссылке
+            
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showModal('✅ Статус системы', `Сервер работает нормально<br><strong>Статус:</strong> ${data.status}`);
+                } else {
+                    showModal('❌ Ошибка', `Проблема с сервером: ${data.detail || 'Неизвестная ошибка'}`);
+                }
+            } catch (error) {
+                showModal('❌ Ошибка', `Не удалось подключиться к серверу: ${error.message}`);
+            }
+        });
+    }
+
+    // Функция для показа всплывающего окна
+    function showModal(title, content) {
+        // Создаем модальное окно если его нет
+        let modal = document.getElementById('healthModal');
+        
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'healthModal';
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h3>${title}</h3>
+                    <div class="modal-body">${content}</div>
+                    <div class="modal-buttons">
+                        <button class="btn btn-primary" id="healthModalOk">OK</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Добавляем обработчик для кнопки OK
+            document.getElementById('healthModalOk').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // Закрытие модального окна при клике вне его
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        } else {
+            // Обновляем содержимое существующего модального окна
+            modal.querySelector('h3').textContent = title;
+            modal.querySelector('.modal-body').innerHTML = content;
+        }
+        
+        modal.style.display = 'block';
+    }
+    
 
     // Initialize the UI
     updateUI();
+    
 });
