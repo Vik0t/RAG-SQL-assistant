@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}RAG-SQL Assistant - Главная{% endblock %}
+
+{% block content %}
+    <!-- Modal for user ID input -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <h3>Добро пожаловать в RAG-SQL Assistant</h3>
+            <p>Пожалуйста, введите ваш User ID для начала работы:</p>
+            <div class="form-group">
+                <label for="modalUserId">User ID:</label>
+                <input type="number" id="modalUserId" class="form-input" placeholder="Введите ваш ID" min="1" required>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" id="saveUserId" class="btn btn-primary">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <h1>RAG-SQL Assistant (Flask)</h1>
+        <div class="user-info">
+            <span>Текущий User ID: <strong id="currentUserId">не установлен</strong></span>
+            <button id="changeUserId" class="btn btn-secondary">Сменить пользователя</button>
+        </div>
+        <p>Service is running. Use the form below to make requests.</p>
+    </header>
+
+    <section class="example">
+        <h3>Примеры запросов</h3>
+        <div class="example-queries">
+            <button class="query-example" data-query="Все мои задачи">Все мои задачи</button>
+            <button class="query-example" data-query="Мои задачи за сентябрь 2025">Задачи за сентябрь</button>
+            <button class="query-example" data-query="Мои задачи с высоким приоритетом">Высокий приоритет</button>
+            <button class="query-example" data-query="Завершенные задачи">Завершенные</button>
+            <button class="query-example" data-query="Задачи в процессе выполнения">В процессе</button>
+        </div>
+        
+        <h3>cURL Example</h3>
+        <pre><code>curl -X POST http://localhost:8000/ask \
+  -H 'Content-Type: application/json' \
+  -d '{"question":"Все мои задачи","identity":{"user_id":1}}'</code></pre>
+    </section>
+
+    <section class="diagnostics">
+        <h3>Diagnostics</h3>
+        <ul>
+            <li><a href="/health">/health</a></li>
+        </ul>
+    </section>
+
+    <section class="test-form">
+        <h3>Make a Request</h3>
+        <form id="askForm" method="post" action="/ask">
+            <div class="form-group">
+                <label for="question">Question:</label>
+                <input type="text" id="question" name="question" 
+                       value="Все мои задачи" class="form-input" required>
+            </div>
+            <input type="hidden" id="user_id" name="user_id" value="">
+            <button type="submit" class="btn" id="submitButton" disabled>Send Request (требуется User ID)</button>
+        </form>
+    </section>
+
+    <section id="responseSection" class="response-section" style="display: none;">
+        <h3>Response</h3>
+        <div id="responseContent"></div>
+    </section>
+{% endblock %}
